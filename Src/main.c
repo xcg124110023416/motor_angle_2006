@@ -127,7 +127,7 @@ int main(void)
   for (i = 0; i < 2; i++)
   {
     // PID_struct_init(&pid_position[i], POSITION_PID, 8000, 2000, 1.5f, 0.0f, 0.0f);
-    PID_struct_init(&pid_speed[i], POSITION_PID, 1500, 1500, 0.01f, 0.0f, 0.65f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
+    PID_struct_init(&pid_speed[i], POSITION_PID, 1500, 1500, 0.02f, 0.0f, 1.1f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
   }
 
 	PID_struct_init(&pid_position[1], POSITION_PID, 8000, 500, 4.6f, 0.0f, 0.0f);
