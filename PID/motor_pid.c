@@ -192,11 +192,13 @@ float pid_angle(pid_t* pid, float get, float set){
     if(set > 0){//舍去了为0的情况，为0即不转动
         delta_get = pid->get[NOW] - pid->get[LAST];
         if(delta_get < -1000 && pid->err[NOW] > 0)   delta_get = 8191 + pid->get[NOW] - pid->get[LAST];//增量为正
-        else if(delta_get >  1000 && pid->err[NOW] < 0)    delta_get = 8191 - pid->get[NOW] + pid->get[LAST];
+        else if(delta_get < -1000 && pid->err[NOW] < 0)    delta_get = 8191 + pid->get[NOW] - pid->get[LAST];//增量为正
+        else if(delta_get >  1000 && pid->err[NOW] < 0)    delta_get = 0 - (8191 - pid->get[NOW] + pid->get[LAST]);//增量为负
     }else if(set < 0){
         delta_get = pid->get[NOW] - pid->get[LAST];
         if(delta_get >  1000 && pid->err[NOW] < 0)   delta_get = 0 - (8191 - pid->get[NOW] + pid->get[LAST]);//增量为负
-        else if(delta_get < -1000 && pid->err[NOW] > 0)    delta_get = 0 - (8191 + pid->get[NOW] - pid->get[LAST]);
+        else if(delta_get >  1000 && pid->err[NOW] > 0)    delta_get = 0 - (8191 + pid->get[NOW] - pid->get[LAST]);//增量为负
+        else if(delta_get < -1000 && pid->err[NOW] > 0)    delta_get = 8191 + pid->get[NOW] - pid->get[LAST];//增量为正
     }
     if(pid->set[NOW] != pid->set[LAST])    delta_err = 0;
 	else delta_err += delta_get;
