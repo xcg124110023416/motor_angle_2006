@@ -1,9 +1,9 @@
 can\usbd_desc.o: ../Src/usbd_desc.c
 can\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 can\usbd_desc.o: ../Inc/usbd_conf.h
-can\usbd_desc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-can\usbd_desc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-can\usbd_desc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+can\usbd_desc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+can\usbd_desc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+can\usbd_desc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 can\usbd_desc.o: ../Inc/main.h
 can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 can\usbd_desc.o: ../Inc/stm32f4xx_hal_conf.h
@@ -12,7 +12,7 @@ can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h
 can\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
 can\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h
 can\usbd_desc.o: ../Drivers/CMSIS/Include/core_cm4.h
-can\usbd_desc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+can\usbd_desc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 can\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_version.h
 can\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 can\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -20,7 +20,7 @@ can\usbd_desc.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 can\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
 can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-can\usbd_desc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+can\usbd_desc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 can\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h

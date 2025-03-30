@@ -83,7 +83,7 @@ void PID_struct_init(
     float kd);
 
 float pid_calc(pid_t *pid, float fdb, float ref);//fdb反馈值，ref参考值
-
+float pid_angle(pid_t* pid, float get, float set);
 extern pid_t pid_rol;
 extern pid_t pid_pit;
 extern pid_t pid_yaw;
@@ -99,4 +99,5 @@ extern pid_t pid_cali_bby; //big buff yaw
 extern pid_t pid_cali_bbp;
 extern pid_t pid_omg;
 extern pid_t pid_pos;
+extern int32_t delta_err,motor_angle;
 #endif

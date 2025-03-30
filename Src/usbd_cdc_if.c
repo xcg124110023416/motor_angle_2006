@@ -26,7 +26,7 @@
 #include "main.h"
 #include "CAN_receive.h"
 #include "usb_device.h"
-
+#include "tim.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,7 +41,7 @@ float set_a = 0.0;
 float set_encoder = 0.0;
 float set_varepsilon = 0.0;
 char send_flag = 0;
-char pos_flag = 0;
+char pos_flag = 2;
 char vel_flag = 1;
 /* USER CODE END PV */
 
@@ -353,6 +353,12 @@ void CMD_DecodeFrame(uint8_t *buffer)
     set_a = (float)combined_data / 100.0f;
     vel_flag = 0;
   }
+	else if (cmd == CMD_SET_ZERO)
+	{
+		int16_t combined_data = (int16_t)(buffer[3] | (buffer[2] << 8));
+    set_encoder = (float)combined_data / 1.0f;
+		pos_flag = 2;
+	}
   else if (cmd == CMD_STOP)
   {
     set_vel = 0;
@@ -363,6 +369,12 @@ void CMD_DecodeFrame(uint8_t *buffer)
   {
     send_flag = 1;
   }
+	else if (cmd == CMD_ZERO)
+  {
+		    encoder = 0;
+				set_encoder = 0;
+        __HAL_TIM_SET_COUNTER(&htim1, 0);
+	}
   return;
 }
 

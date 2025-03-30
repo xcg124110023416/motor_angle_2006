@@ -1,4 +1,4 @@
---cpu Cortex-M4.fp
+--cpu=Cortex-M4.fp
 "can\startup_stm32f407xx.o"
 "can\main.o"
 "can\gpio.o"
@@ -41,6 +41,6 @@
 "can\usbd_ioreq.o"
 "can\usbd_cdc.o"
 --strict --scatter "can\can.sct"
---summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "can.map" -o can\can.axf

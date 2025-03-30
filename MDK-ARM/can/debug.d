@@ -1,15 +1,15 @@
 can\debug.o: ..\application\Debug.c
 can\debug.o: ..\application\Debug.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 can\debug.o: ../Inc/usbd_cdc_if.h
 can\debug.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
 can\debug.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 can\debug.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h
 can\debug.o: ../Inc/usbd_conf.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 can\debug.o: ../Inc/main.h
 can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 can\debug.o: ../Inc/stm32f4xx_hal_conf.h
@@ -25,7 +25,7 @@ can\debug.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 can\debug.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
 can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
 can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
 can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
@@ -48,4 +48,4 @@ can\debug.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 can\debug.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 can\debug.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 can\debug.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
-can\debug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+can\debug.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h

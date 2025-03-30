@@ -42,7 +42,7 @@ extern float angle;
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+extern int encoder;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

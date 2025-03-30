@@ -61,6 +61,8 @@
 #define CMD_UPDATE 0x04
 #define CMD_VAREPSILON 0X05
 #define CMD_A 0x06
+#define CMD_SET_ZERO 0x07
+#define CMD_ZERO 0x08
 
 extern uint8_t usb_buf[256];
 extern int16_t set_vel;
