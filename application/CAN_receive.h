@@ -65,7 +65,7 @@ typedef struct{
 #define PI 3.1415926f
 inline float rpm_to_radps(int16_t rpm)
 {
-    return (float)rpm * 2.0f * PI / 60.0f;
+    return (float)rpm * 2.0f * PI / 60.0f / 36.0f;
 }
 
 

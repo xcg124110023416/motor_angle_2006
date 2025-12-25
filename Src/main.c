@@ -96,7 +96,7 @@ float wrap_deg(float a){
 void control_step(pid_t pid_speed, float psi_rad, int16_t speed_rpm_feedback)
 {
     // --- 参数先给一组“能跑起来”的默认值（后面再调） ---
-    const float OMEGA_MAX = 3.0f;          // rad/s 先保守
+    const float OMEGA_MAX = 6.0f;          // rad/s 先保守
       const float PSI0      = 0.523599f;        // 30° = 0.523599 rad
 
     // 1) 外环：psi -> omega_ref
@@ -159,7 +159,7 @@ int main(void)
   can_filter_init();
   // PID初始化
 
-  PID_struct_init(&pid_speed, POSITION_PID, 1500, 300, 300.0f, 10.0f, 0.0f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
+  PID_struct_init(&pid_speed, POSITION_PID, 1500, 300, 800.0f, 8.0f, 200.0f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
   // PID_struct_init(&pid_speed, POSITION_PID, 1500, 1500, 0.02f, 0.0f, 1.1f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
 
 
