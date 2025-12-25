@@ -59,8 +59,8 @@ static void pid_param_init(
     pid->IntegralLimit = intergral_limit;
     pid->MaxOutput = maxout;
     pid->pid_mode = mode;
-		pid->max_err = 10;
-		pid->deadband = 10;
+		pid->max_err = 0;
+		pid->deadband = 0;
     
     pid->p = kp;
     pid->i = ki;
