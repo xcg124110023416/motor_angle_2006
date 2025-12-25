@@ -25,6 +25,14 @@
 #define motor_num 2		//电机数量
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
+#include <math.h>
+
+inline float omega_ref_from_psi(float psi, float omega_max, float psi0)
+{
+    if (psi0 < 1e-6f) psi0 = 1e-6f;
+    return omega_max * tanhf(psi / psi0);
+}
+
 
 enum
 {
@@ -84,6 +92,7 @@ void PID_struct_init(
 
 float pid_calc(pid_t *pid, float fdb, float ref);//fdb反馈值，ref参考值
 float pid_angle(pid_t* pid, float get, float set);
+float speed_pi_update(pid_t* pid, float omega_ref, float omega_fdb);
 extern pid_t pid_rol;
 extern pid_t pid_pit;
 extern pid_t pid_yaw;

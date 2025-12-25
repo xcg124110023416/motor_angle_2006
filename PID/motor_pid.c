@@ -59,8 +59,8 @@ static void pid_param_init(
     pid->IntegralLimit = intergral_limit;
     pid->MaxOutput = maxout;
     pid->pid_mode = mode;
-		pid->max_err = 0;
-		pid->deadband = 0;
+		pid->max_err = 10;
+		pid->deadband = 10;
     
     pid->p = kp;
     pid->i = ki;
@@ -170,7 +170,48 @@ float pid_sp_calc(pid_t* pid, float get, float set, float gyro){
 }
 
 
+float speed_pi_update(pid_t* pid, float omega_ref, float omega_fdb)
+{
+    pid->get[NOW] = omega_fdb;
+    pid->set[NOW] = omega_ref;
+    pid->err[NOW] = pid->set[NOW] - pid->get[NOW];
 
+    if (pid->max_err != 0 && ABS(pid->err[NOW]) >  pid->max_err)
+		return 0;
+	if (pid->deadband != 0 && ABS(pid->err[NOW]) < pid->deadband)
+		return 0;
+
+    if(pid->pid_mode == POSITION_PID) //位置式p
+    {
+        pid->pout = pid->p * pid->err[NOW];
+        pid->iout += pid->i * pid->err[NOW];
+        pid->dout = pid->d * (pid->err[NOW] - pid->err[LAST] );
+        abs_limit(&(pid->iout), pid->IntegralLimit);
+        pid->pos_out = pid->pout + pid->iout + pid->dout;
+        abs_limit(&(pid->pos_out), pid->MaxOutput);
+        pid->last_pos_out = pid->pos_out;	//update last time 
+    }
+    else if(pid->pid_mode == DELTA_PID)//增量式P
+    {
+        pid->pout = pid->p * (pid->err[NOW] - pid->err[LAST]);
+        pid->iout = pid->i * pid->err[NOW];
+        pid->dout = pid->d * (pid->err[NOW] - 2*pid->err[LAST] + pid->err[LLAST]);
+        
+        abs_limit(&(pid->iout), pid->IntegralLimit);
+        pid->delta_u = pid->pout + pid->iout + pid->dout;
+        pid->delta_out = pid->last_delta_out + pid->delta_u;
+        abs_limit(&(pid->delta_out), pid->MaxOutput);
+        pid->last_delta_out = pid->delta_out;	//update last time
+    }
+    
+    pid->err[LLAST] = pid->err[LAST];
+    pid->err[LAST] = pid->err[NOW];
+    pid->get[LLAST] = pid->get[LAST];
+    pid->get[LAST] = pid->get[NOW];
+    pid->set[LLAST] = pid->set[LAST];
+    pid->set[LAST] = pid->set[NOW];
+    return pid->pid_mode==POSITION_PID ? pid->pos_out : pid->delta_out;
+}
 
 
 

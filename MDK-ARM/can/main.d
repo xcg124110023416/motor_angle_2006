@@ -49,6 +49,7 @@ can\main.o: ../bsp/boards/bsp_can.h
 can\main.o: ../application/struct_typedef.h
 can\main.o: ../application/CAN_receive.h
 can\main.o: ../PID/motor_pid.h
+can\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 can\main.o: ../PID/mytype.h
 can\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 can\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

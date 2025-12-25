@@ -35,9 +35,9 @@ can\motor_pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 can\motor_pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 can\motor_pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 can\motor_pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+can\motor_pid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 can\motor_pid.o: ..\PID\mytype.h
 can\motor_pid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 can\motor_pid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 can\motor_pid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 can\motor_pid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-can\motor_pid.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

@@ -79,6 +79,49 @@ void SystemClock_Config(void);
 
 /* USER CODE END 0 */
 
+float psi_rad = 0.0f;
+pid_t pid_speed[motor_num];    // 全局变量
+pid_t pid_position[motor_num]; // 全局变量
+
+float wrap_deg(float a){
+  while (a > 180) a -= 360;
+  while (a < -180) a += 360;
+  return a;
+}
+
+// 每个定时器周期调用一次
+void control_step(pid_t pid_speed[2], float psi_rad, int16_t speed_rpm_feedback)
+{
+    // --- 参数先给一组“能跑起来”的默认值（后面再调） ---
+    const float OMEGA_MAX = 3.0f;          // rad/s 先保守
+    const float PSI0      = 1.0472f;        // 60° = 1.0472 rad
+
+    // static pi_t vpi = {
+    //     .kp = 300.0f,       // 
+    //     .ki = 2000.0f,      // 
+    //     .integral = 0,
+    //     .integral_limit = 1500.0f,
+    //     .out_limit = 1500.0f // I_MAX：导盲建议先 1500~3000
+    // };
+    for (uint8_t i = 0; i < 2; i++)
+    {
+      PID_struct_init(&pid_speed[i], POSITION_PID, 1500, 300, 300.0f, 10.0f, 0.0f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
+    }
+
+    // 1) 外环：psi -> omega_ref
+    float omega_ref = omega_ref_from_psi(psi_rad, OMEGA_MAX, PSI0);
+
+    // 2) 反馈：rpm -> omega_fdb
+    float omega_fdb = rpm_to_radps(speed_rpm_feedback);
+
+    // 3) 内环：omega -> I_cmd
+    float I_cmd_f = speed_pi_update(&pid_speed[0], omega_ref, omega_fdb);
+
+    // 4) 发电流指令
+    CAN_cmd_chassis((int16_t)I_cmd_f, 0, 0, 0);
+}
+
+
 /**
  * @brief  The application entry point.
  * @retval int
@@ -86,8 +129,6 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  pid_t pid_position[motor_num]; // ��Ϊת�򴮼�pid���ڻ�PID
-  pid_t pid_speed[motor_num];    // ���Ƶ��ת��ǰ����PID
   uint8_t i;
   // float set_current[3]; 	// ï¿½ï¿½ï¿½ï¿½
   int16_t delta;                  // ï¿½è¶¨ï¿½Ù¶ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Ù¶ÈµÄ²ï¿½Öµ
@@ -124,11 +165,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   can_filter_init();
   // PIDï¿½ï¿½Ê¼ï¿½ï¿½
-  for (i = 0; i < 2; i++)
-  {
-    // PID_struct_init(&pid_position[i], POSITION_PID, 8000, 2000, 1.5f, 0.0f, 0.0f);
-    PID_struct_init(&pid_speed[i], POSITION_PID, 1500, 1500, 0.02f, 0.0f, 1.1f); // 4 motos angular rate close loop.//POSITION_PID, 16384, 16384, 1.8f, 0.1f, 0.0f
-  }
+
 
 	PID_struct_init(&pid_position[1], POSITION_PID, 8000, 500, 4.6f, 0.0f, 0.0f);
 	PID_struct_init(&pid_position[2], POSITION_PID, 8000, 2500, 8000.6f, 20.0f, 0.0f);
@@ -216,10 +253,17 @@ int main(void)
 		
 		
 //    pid_calc(&pid_speed[0], (float)motor_chassis[0].speed_rpm, set_vel);
-		
+
+
 		
 		pid_angle(&pid_speed[0], (float)motor_chassis[0].ecd, set_vel);
-		
+
+
+		// 串口收到：int16_t psi_deg_x100
+    float psi_deg = set_vel * 100 / 100.0f;          // ° 
+    // 先做wrap（度制）避免 ±180 跳变
+    psi_deg = wrap_deg(psi_deg);                     // [-180, 180]
+    psi_rad = psi_deg * (PI / 180.0f);         // rad
 
 //     // ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã»ï¿½+ï¿½Ù¶È»ï¿½pidï¿½Ä¼ï¿½ï¿½ï¿½
 //     // ï¿½ï¿½Êµï¿½ï¿½Æ½Ì¨ï¿½Ç¶ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Öµ
@@ -334,33 +378,43 @@ float getRadian(void)
   return getAngle() * 3.1415926 / 180;
 }
 
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) //定时器中断
 {
-  static int n = 0;
-  static float varepsilon_data[4] = {0, 0, 0, 0};
+  // static int n = 0;
+  // static float varepsilon_data[4] = {0, 0, 0, 0};
   if (htim == &htim4)
   {
-    // 1khz trigger
-    // ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½250hz
-    float vel_r = motor_chassis[0].speed_rpm / k_vel;
+    // // 1khz trigger
+    // // ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½250hz
+    // float vel_r = motor_chassis[0].speed_rpm / k_vel;
 
-    encoder = getTimEncoder();
-    angle = getAngle();
-    radian = getRadian();
-    if (last_radian != 0)
-    {
-      radian = radian * 0.8f + last_radian * 0.2f;
-      varepsilon = (radian - last_radian) / 0.004f;
-    }
-    last_radian = radian;
-    n++;
+    // encoder = getTimEncoder();
+    // angle = getAngle();
+    // radian = getRadian();
+    // if (last_radian != 0)
+    // {
+    //   radian = radian * 0.8f + last_radian * 0.2f;
+    //   varepsilon = (radian - last_radian) / 0.004f;
+    // }
+    // last_radian = radian;
+    // n++;
 
-    // ï¿½ï¿½ï¿½Ý¼ï¿½ï¿½Ù¶È¼ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
-    if (!vel_flag)//NMPC模式下
-    {
-      vel_r = vel_r + set_a * 0.004f;
-      set_vel = vel_r * k_vel;
-    }
+    // // ï¿½ï¿½ï¿½Ý¼ï¿½ï¿½Ù¶È¼ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    // if (!vel_flag)//NMPC模式下
+    // {
+    //   vel_r = vel_r + set_a * 0.004f;
+    //   set_vel = vel_r * k_vel;
+    // }
+
+    // // 取输入：偏差角（rad）
+    // float psi = psi_rad;
+
+    // // 取反馈：电机转速（rpm）
+    // int16_t speed_rpm = motor_chassis[0].speed_rpm;
+
+    // // 调用控制（外环->omega_ref，内环PI->I_cmd->CAN）
+    // control_step(pid_speed, psi, speed_rpm);
   }
 }
 
