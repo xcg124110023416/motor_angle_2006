@@ -97,7 +97,7 @@ void control_step(pid_t pid_speed, float psi_rad, int16_t speed_rpm_feedback)
 {
     // --- 参数先给一组“能跑起来”的默认值（后面再调） ---
     const float OMEGA_MAX = 6.0f;          // rad/s 先保守
-      const float PSI0      = 0.523599f;        // 30° = 0.523599 rad
+    const float PSI0      = 0.34907f;        // 20° = 0.34907 rad
 
     // 1) 外环：psi -> omega_ref
     omega_ref = omega_ref_from_psi(psi_rad, OMEGA_MAX, PSI0);
@@ -260,11 +260,7 @@ int main(void)
 		// pid_angle(&pid_speed, (float)motor_chassis[0].ecd, set_vel);
 
 
-		// 串口收到：int16_t psi_deg_x100
-    float psi_deg = set_vel * 100 / 100.0f;          // ° 
-    // 先做wrap（度制）避免 ±180 跳变
-    psi_deg = wrap_deg(psi_deg);                     // [-180, 180]
-    psi_rad = psi_deg * (PI / 180.0f);         // rad
+
 
 //     // ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã»ï¿½+ï¿½Ù¶È»ï¿½pidï¿½Ä¼ï¿½ï¿½ï¿½
 //     // ï¿½ï¿½Êµï¿½ï¿½Æ½Ì¨ï¿½Ç¶ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Öµ
@@ -406,7 +402,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) //定时器中断
     // {
     //   vel_r = vel_r + set_a * 0.004f;
     //   set_vel = vel_r * k_vel;
-    // }
+    // 
+
+    // 串口收到：int16_t psi_deg_x100
+    float psi_deg = set_vel * 100 / 100.0f;          // ° 
+    // 先做wrap（度制）避免 ±180 跳变
+    psi_deg = wrap_deg(psi_deg);                     // [-180, 180]
+    psi_rad = psi_deg * (PI / 180.0f);         // rad
 
     // 取输入：偏差角（rad）
     float psi = psi_rad;

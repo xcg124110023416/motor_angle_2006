@@ -144,11 +144,6 @@ static int8_t CDC_Receive_FS(uint8_t *pbuf, uint32_t *Len);
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
 
 /* USER CODE END PRIVATE_FUNCTIONS_DECLARATION */
-
-/**
- * @}
- */
-
 USBD_CDC_ItfTypeDef USBD_Interface_fops_FS =
     {
         CDC_Init_FS,
@@ -274,10 +269,25 @@ static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len)
   /* USER CODE BEGIN 6 */
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-  // 处理debug下发的指�?
   Debug_DecodeFrame(Buf);
-  // 处理ROS下发的指�?
-  CMD_DecodeFrame(Buf);
+  // 处理可能被合并成一个 USB 包的多帧命令（每帧4字节，带帧头）
+  uint32_t parsed = 0;
+  uint32_t total = (Len != NULL) ? *Len : 0;
+  while (parsed + 4 <= total)
+  {
+    uint8_t *frame = &Buf[parsed];
+    if (frame[0] == CMD_FRAME_HEADER)
+    {
+      // Debug_DecodeFrame(frame);
+      CMD_DecodeFrame(frame);
+      parsed += 4;
+    }
+    else
+    {
+      // 跳过非帧头字节，尽量同步到下一个帧头
+      parsed += 1;
+    }
+  }
   return (USBD_OK);
   /* USER CODE END 6 */
 }
@@ -328,7 +338,7 @@ void CMD_DecodeFrame(uint8_t *buffer)
   if (buffer[0] != CMD_FRAME_HEADER) // 帧头不对直接返回
     return;
   // 解析命令
-  uint8_t cmd = buffer[1]; // 命令�?
+  uint8_t cmd = buffer[1]; // 命令?
   if (cmd == CMD_VEL)
   {
     int16_t combined_data = (int16_t)(buffer[3] | (buffer[2] << 8));
@@ -353,12 +363,12 @@ void CMD_DecodeFrame(uint8_t *buffer)
     set_a = (float)combined_data / 100.0f;
     vel_flag = 0;
   }
-	else if (cmd == CMD_SET_ZERO)
-	{
-		int16_t combined_data = (int16_t)(buffer[3] | (buffer[2] << 8));
+  else if (cmd == CMD_SET_ZERO)
+  {
+    int16_t combined_data = (int16_t)(buffer[3] | (buffer[2] << 8));
     set_encoder = (float)combined_data / 1.0f;
-		pos_flag = 2;
-	}
+    pos_flag = 2;
+  }
   else if (cmd == CMD_STOP)
   {
     set_vel = 0;
@@ -369,12 +379,12 @@ void CMD_DecodeFrame(uint8_t *buffer)
   {
     send_flag = 1;
   }
-	else if (cmd == CMD_ZERO)
+  else if (cmd == CMD_ZERO)
   {
-		    encoder = 0;
-				set_encoder = 0;
-        __HAL_TIM_SET_COUNTER(&htim1, 0);
-	}
+    encoder = 0;
+    set_encoder = 0;
+    __HAL_TIM_SET_COUNTER(&htim1, 0);
+  }
   return;
 }
 
